@@ -22,9 +22,15 @@ jobs:
         run: |
           set -euo pipefail
           [[ "$WALLET" =~ ^[1-9A-HJ-NP-Za-km-z]{32,44}$ ]]
-          response="$(
-            curl --fail-with-body --silent --show-error https://api.devnet.solana.com \
-              -H 'content-type: application/json' \
-              --data "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"requestAirdrop\",\"params\":[\"$WALLET\",100000000]}"
-          )"
-          echo "$response" | jq -e '.result | type == "string"'
+          for attempt in 1 2 3 4 5; do
+            response="$(
+              curl --fail-with-body --silent --show-error https://api.devnet.solana.com \
+                -H 'content-type: application/json' \
+                --data "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"requestAirdrop\",\"params\":[\"$WALLET\",100000]}"
+            )"
+            if echo "$response" | jq -e '.result | type == "string"' >/dev/null; then
+              exit 0
+            fi
+            sleep $((attempt * 5))
+          done
+          exit 1
