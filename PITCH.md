@@ -84,3 +84,5 @@ Next:
 **Open source:** https://github.com/hakuha114-collab/solana_coralOS
 
 **Run:** `docker compose up -d coral && npm run marketplace`
+
+**Product walkthrough:** [ProofSentry demo video](examples/marketplace/web/demo-artifacts/proofsentry-demo.mp4)

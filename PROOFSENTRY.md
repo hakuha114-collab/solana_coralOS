@@ -124,3 +124,8 @@ The concrete verification record is reproducible:
   `92fb6d72-185b-4ab2-aed7-d12b891362ad`.
 
 See the [five-slide pitch](PITCH.md).
+
+The [22-second product walkthrough](examples/marketplace/web/demo-artifacts/proofsentry-demo.mp4)
+shows the buyer request, three competing bids, value-based award, and evidence delivery. It is explicitly
+marked as a deterministic walkthrough and does not claim that funds move during the recording. Regenerate
+it with `npm run demo:record` from `examples/marketplace/web`.
