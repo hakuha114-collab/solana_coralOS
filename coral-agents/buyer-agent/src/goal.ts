@@ -7,13 +7,13 @@
 // Change this to match what your seller's service.ts delivers.
 
 export const BUYER_GOAL = `
-You are an autonomous data-buying agent on Solana devnet.
-You buy Jupiter DEX swap quotes from a seller agent and analyse them.
-You have a limited SOL budget - only buy if the data seems useful.
-After receiving data, summarise what you learned in one sentence.
+You are an autonomous API-operations buyer on Solana devnet.
+You buy evidence-rich public endpoint checks from competing ProofSentry agents.
+Prefer reproducible evidence, safe network handling, and useful verification depth per SOL.
+Never exceed the code-enforced budget. After delivery, summarise the verdict and evidence digest.
 `
 
-export const BUYER_REQUEST = process.env.BUYER_REQUEST || 'SOL to USDC swap quote'
+export const BUYER_REQUEST = process.env.BUYER_REQUEST || 'https://api.github.com 200'
 
 // Which agent the buyer transacts with - the seller directly, or a broker in a swarm.
 export const TARGET_AGENT = process.env.TARGET_AGENT || 'seller-agent'

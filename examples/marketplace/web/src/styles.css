@@ -51,6 +51,19 @@ body { margin: 0; background: var(--bg); color: var(--txt); }
 .reason { color: var(--txt); font-size: 13px; margin: 4px 2px 12px; }
 .delivered { background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 12px; overflow-x: auto; color: var(--dim); }
 
+.proof-panel { border: 1px solid var(--line); border-radius: 10px; padding: 12px; background: var(--bg); }
+.proof-pass { border-color: var(--won); }
+.proof-fail, .proof-error { border-color: var(--refund); }
+.proof-head { display: flex; justify-content: space-between; color: var(--link); }
+.proof-pass .proof-head strong { color: var(--won); }
+.proof-fail .proof-head strong, .proof-error .proof-head strong { color: var(--refund); }
+.proof-meta { display: flex; gap: 16px; margin: 10px 0; color: var(--dim); font-size: 12px; }
+.proof-target { overflow-wrap: anywhere; font-size: 12px; }
+.proof-checks { list-style: none; padding: 0; margin: 8px 0; display: grid; gap: 5px; font-size: 12px; }
+.check-pass b { color: var(--won); }
+.check-fail b { color: var(--refund); }
+.proof-digest { display: block; color: var(--dim); overflow-wrap: anywhere; font-size: 11px; }
+
 .settle-row { display: flex; gap: 10px; margin-top: 10px; }
 .settle { color: var(--link); text-decoration: none; font-size: 12px; border: 1px solid var(--line); padding: 4px 8px; border-radius: 6px; }
 .settle:hover { border-color: var(--link); }

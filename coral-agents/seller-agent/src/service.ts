@@ -6,16 +6,16 @@
  * here anymore.
  */
 import { complete, parseJsonReply } from '@pay/agent-runtime'
+import { runProofSentry } from './proofsentry.js'
 
 const TXLINE_BASE = process.env.TXLINE_BASE_URL || 'https://txline-dev.txodds.com'
 
 export async function deliverService(request: string): Promise<string> {
   const [first, ...rest] = request.trim().split(/\s+/).filter(Boolean)
   const service = (first ?? 'txline').toLowerCase()
-  if (service !== 'txline') {
-    return JSON.stringify({ error: 'unsupported service', service, supported: ['txline'] })
-  }
-  return txlineService(rest.join(' '))
+  if (service === 'proofsentry') return runProofSentry(rest.join(' '))
+  if (service === 'txline') return txlineService(rest.join(' '))
+  return JSON.stringify({ error: 'unsupported service', service, supported: ['proofsentry', 'txline'] })
 }
 
 async function txlineGet(path: string): Promise<unknown> {

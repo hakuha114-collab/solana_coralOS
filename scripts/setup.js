@@ -15,6 +15,7 @@ const root = join(__dir, '..')
 const envPath = join(root, '.env')
 const examplePath = join(root, '.env.example')
 const walletsPath = join(root, 'WALLETS.txt')
+const buyerKeypairPath = join(root, 'buyer-keypair.json')
 
 /** Set or append `KEY=value` without disturbing the rest of the file. */
 function setKv(text, key, value) {
@@ -44,13 +45,17 @@ env = setKv(env, 'BUYER_KEYPAIR_B58', buyerB58)
 env = setKv(env, 'SELLER_KEYPAIR_B58', sellerB58)
 env = setKv(env, 'ARBITER_KEYPAIR_B58', arbiterB58)
 env = setKv(env, 'WALLET', sellerPubkey) // the seller's public key - the escrow payout destination
-env = setKv(env, 'SOLANA_RPC_URL', getKv(env, 'SOLANA_RPC_URL') || 'https://api.devnet.solana.com')
+// Solayer's public devnet endpoint supports both normal RPC traffic and small development airdrops.
+env = setKv(env, 'SOLANA_RPC_URL', 'https://devnet-rpc.solayer.org')
 
 writeFileSync(envPath, env)
+// Standard Solana JSON keypair format for devnet-only CLI tools such as the proof-of-work faucet.
+// The path is gitignored and the secret is never printed.
+writeFileSync(buyerKeypairPath, JSON.stringify(Array.from(Keypair.fromSecretKey(bs58.decode(buyerB58)).secretKey)))
 
 // -- report --
 const block = [
-  'World Cup Oracle - devnet wallets',
+  'ProofSentry - devnet wallets',
   `Generated: ${new Date().toISOString()}`,
   '',
   `  Buyer   wallet  ${buyerPubkey}   <- signs + funds the escrow (FUND THIS)`,

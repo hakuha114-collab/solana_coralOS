@@ -1,0 +1,30 @@
+name: Fund devnet demo wallet
+
+on:
+  workflow_dispatch:
+    inputs:
+      wallet:
+        description: Solana devnet wallet
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  airdrop:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Request a small devnet airdrop
+        env:
+          WALLET: ${{ inputs.wallet }}
+        run: |
+          set -euo pipefail
+          [[ "$WALLET" =~ ^[1-9A-HJ-NP-Za-km-z]{32,44}$ ]]
+          response="$(
+            curl --fail-with-body --silent --show-error https://api.devnet.solana.com \
+              -H 'content-type: application/json' \
+              --data "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"requestAirdrop\",\"params\":[\"$WALLET\",100000000]}"
+          )"
+          echo "$response" | jq -e '.result | type == "string"'

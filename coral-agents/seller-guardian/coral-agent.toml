@@ -1,0 +1,33 @@
+edition = 4
+
+[agent]
+name = "seller-guardian"
+version = "0.1.0"
+description = "Balanced ProofSentry API reliability seller."
+summary = "Competes on value and delivers bounded, hashed endpoint evidence."
+readme = "Bids on proofsentry jobs, verifies funded escrow, and delivers a standard-depth API report."
+
+[agent.license]
+type = "spdx"
+expression = "MIT"
+
+[options]
+SELLER_WALLET = { type = "string", description = "Devnet payout wallet" }
+AGENT_NAME = { type = "string", default = "seller-guardian" }
+SERVICES = { type = "string", default = "proofsentry" }
+SERVICE = { type = "string", default = "proofsentry" }
+FLOOR_SOL = { type = "f64", default = 0.00032 }
+PERSONA = { type = "string", default = "an API reliability engineer balancing price and evidence quality" }
+AUDIT_DEPTH = { type = "string", default = "standard" }
+SOLANA_RPC_URL = { type = "string", default = "" }
+SETTLEMENT_MODE = { type = "string", default = "arbiter" }
+ESCROW_DEADLINE_SECS = { type = "f64", default = 600 }
+ANTHROPIC_API_KEY = { type = "string", default = "" }
+OPENAI_API_KEY = { type = "string", default = "" }
+VENICE_API_KEY = { type = "string", default = "" }
+LLM_PROVIDER = { type = "string", default = "" }
+LLM_MODEL = { type = "string", default = "" }
+TRACE = { type = "string", default = "" }
+
+[runtimes.docker]
+image = "seller-agent:0.1.0"

@@ -3,6 +3,7 @@ import { StatusPill } from './StatusPill'
 import { BidRow, DeclinedRow } from './BidRow'
 import { SettlementBadge } from './SettlementBadge'
 import { WorldCupPanel } from './WorldCupPanel'
+import { ProofSentryPanel } from './ProofSentryPanel'
 
 /** One auction round: the need, the competing bids, the award + reasoning, and on-chain settlement. */
 export function RoundCard({ round }: { round: Round }) {
@@ -38,6 +39,8 @@ export function RoundCard({ round }: { round: Round }) {
       {round.delivered && (
         (round.delivered.data as { service?: string } | undefined)?.service === 'txline-edge'
           ? <WorldCupPanel edge={round.delivered.data as Parameters<typeof WorldCupPanel>[0]['edge']} />
+          : (round.delivered.data as { service?: string } | undefined)?.service === 'proofsentry'
+            ? <ProofSentryPanel result={round.delivered.data as Parameters<typeof ProofSentryPanel>[0]['result']} />
           : <pre className="delivered" data-testid="delivered">{round.delivered.raw}</pre>
       )}
 

@@ -1,4 +1,8 @@
-# Agents that earn — a Solana × CoralOS starter kit
+# ProofSentry — API evidence agents that earn on Solana
+
+> **Imperial Agent Hackathon fork:** autonomous API-verification sellers compete on CoralOS, deliver
+> content-addressed evidence, and get paid through Solana devnet escrow. Start with
+> [the ProofSentry architecture and demo](PROOFSENTRY.md).
 
 > **Fork-ready rails for autonomous services that get paid on-chain.** An LLM agent sells a service;
 > buyers reason about value; sellers compete on price and quality; funds lock in a Solana **devnet**

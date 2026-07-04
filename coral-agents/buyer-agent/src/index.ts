@@ -31,14 +31,14 @@ import { payoutMatches } from './guard.js'
 
 const RPC = process.env.SOLANA_RPC_URL ?? 'https://api.devnet.solana.com'
 const BUDGET = Number(process.env.BUYER_MAX_SOL ?? '0.001')
-const SERVICE = process.env.BUYER_SERVICE ?? 'txline'
+const SERVICE = process.env.BUYER_SERVICE ?? 'proofsentry'
 // Rotate through several args so each round trades a *different* thing (BUYER_ARGS=csv of fixture ids,
 // else the single BUYER_ARG). This is what stops the market looking like the same round on a loop.
-const ARGS = (process.env.BUYER_ARGS || process.env.BUYER_ARG || 'SOL-USDC').split(',').map((s) => s.trim()).filter(Boolean)
+const ARGS = (process.env.BUYER_ARGS || process.env.BUYER_ARG || 'https://api.github.com 200').split(',').map((s) => s.trim()).filter(Boolean)
 const ARG = ARGS[0]
 const BID_WINDOW_MS = Number(process.env.BID_WINDOW_MS ?? '5000')
 const CYCLE_MS = Number(process.env.CYCLE_INTERVAL_MS ?? '30000')
-const SELLERS = (process.env.MARKET_SELLERS ?? 'seller-worldcup,seller-fast,seller-premium')
+const SELLERS = (process.env.MARKET_SELLERS ?? 'seller-fast,seller-guardian,seller-forensic')
   .split(',').map((s) => s.trim()).filter(Boolean)
 // F3: the payout wallet the buyer expects (personas share one in the demo). If set, the buyer refuses
 // to deposit to an ESCROW_REQUIRED whose seller= pubkey differs - binding the award to the payout.
@@ -49,12 +49,27 @@ const trace = process.env.TRACE === '1'
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 const expl = (kind: 'tx' | 'address', id: string) => `https://explorer.solana.com/${kind}/${id}?cluster=devnet`
 
+async function retry<T>(label: string, operation: () => Promise<T>, attempts = 5): Promise<T> {
+  let lastError: unknown
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    try {
+      return await operation()
+    } catch (error) {
+      lastError = error
+      console.error(`[buyer] ${label} attempt ${attempt}/${attempts} failed: ${error}`)
+      if (attempt < attempts) await sleep(attempt * 1_500)
+    }
+  }
+  throw lastError
+}
+
 /** Best-value selection via LLM; deterministic cheapest fallback. Returns the winner + its reasoning. */
 async function pickWinner(pool: Bid[]): Promise<{ winner: Bid; reason?: string }> {
   if (pool.length === 1) return { winner: pool[0] }
   try {
     const system =
-      'You are a buyer choosing the best-value bid for a Solana data service. ' +
+      'You are a buyer choosing the best-value API verification bid. Prefer reproducible evidence, ' +
+      'sensible security depth, and price discipline. ' +
       'Reply ONLY with JSON {"by": "<seller name>", "reason": "<short>"}.'
     const user =
       `service=${SERVICE} arg=${ARG} budget=${BUDGET}\nbids:\n` +
@@ -97,10 +112,10 @@ await startCoralAgent({ agentName: process.env.AGENT_NAME ?? 'buyer-agent' }, as
     try { await ctx.waitForAgent(s, 8000) } catch { /* seller may already be present */ }
   }
   const thread = await ctx.createThread('market', SELLERS)
-  const program = await makeProgram(buyer, RPC)
+  const program = await retry('connect to escrow program', () => makeProgram(buyer, RPC))
   if (arbiter) {
-    await ensureArbiterConfig(buyer, arbiter.publicKey, RPC)
-    await ensureArbiterFunded(buyer, arbiter.publicKey, RPC)
+    await retry('initialise arbiter config', () => ensureArbiterConfig(buyer, arbiter.publicKey, RPC))
+    await retry('fund arbiter fees', () => ensureArbiterFunded(buyer, arbiter.publicKey, RPC))
   }
   let round = 0
 
