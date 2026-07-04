@@ -129,3 +129,7 @@ The [22-second product walkthrough](examples/marketplace/web/demo-artifacts/proo
 shows the buyer request, three competing bids, value-based award, and evidence delivery. It is explicitly
 marked as a deterministic walkthrough and does not claim that funds move during the recording. Regenerate
 it with `npm run demo:record` from `examples/marketplace/web`.
+
+The same deterministic walkthrough is deployed publicly at
+https://hakuha114-collab.github.io/solana_coralOS/. GitHub Actions runs the React tests, typecheck, and
+production build before deployment.

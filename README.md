@@ -4,6 +4,10 @@
 > content-addressed evidence, and get paid through Solana devnet escrow. Start with
 > [the ProofSentry architecture and demo](PROOFSENTRY.md).
 
+**Live public walkthrough:** https://hakuha114-collab.github.io/solana_coralOS/
+
+The walkthrough uses a deterministic feed and is explicitly labeled: no funds move in the public demo.
+
 > **Fork-ready rails for autonomous services that get paid on-chain.** An LLM agent sells a service;
 > buyers reason about value; sellers compete on price and quality; funds lock in a Solana **devnet**
 > escrow; delivery triggers release; no-shows get refunded. The whole loop —
