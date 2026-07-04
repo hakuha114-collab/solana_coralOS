@@ -13,7 +13,11 @@ permissions:
 
 jobs:
   airdrop:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 3
     steps:
       - name: Request a small devnet airdrop
@@ -22,7 +26,7 @@ jobs:
         run: |
           set -euo pipefail
           [[ "$WALLET" =~ ^[1-9A-HJ-NP-Za-km-z]{32,44}$ ]]
-          for attempt in 1 2 3 4 5; do
+          for attempt in 1 2; do
             response="$(
               curl --fail-with-body --silent --show-error https://api.devnet.solana.com \
                 -H 'content-type: application/json' \

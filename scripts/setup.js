@@ -45,8 +45,7 @@ env = setKv(env, 'BUYER_KEYPAIR_B58', buyerB58)
 env = setKv(env, 'SELLER_KEYPAIR_B58', sellerB58)
 env = setKv(env, 'ARBITER_KEYPAIR_B58', arbiterB58)
 env = setKv(env, 'WALLET', sellerPubkey) // the seller's public key - the escrow payout destination
-// Solayer's public devnet endpoint supports both normal RPC traffic and small development airdrops.
-env = setKv(env, 'SOLANA_RPC_URL', 'https://devnet-rpc.solayer.org')
+env = setKv(env, 'SOLANA_RPC_URL', 'https://api.devnet.solana.com')
 
 writeFileSync(envPath, env)
 // Standard Solana JSON keypair format for devnet-only CLI tools such as the proof-of-work faucet.
@@ -62,22 +61,21 @@ const block = [
   `  Seller  wallet  ${sellerPubkey}   <- receives on release (no funding needed)`,
   `  Arbiter wallet  ${arbiterPubkey}   <- gates release/refund; the proxy tops up its fees (no funding needed)`,
   '',
-  'FUND THE BUYER with devnet SOL - the only way is the web faucet',
-  '(sign in with GitHub; CLI/RPC airdrops are gated):',
+  'FUND THE BUYER with devnet SOL:',
   '',
   '  https://faucet.solana.com',
+  '  or: cargo install devnet-pow && devnet-pow mine',
   '',
 ].join('\n')
 writeFileSync(walletsPath, block)
 console.log('\n' + block)
 console.log('(saved to WALLETS.txt - keys written to .env)')
 console.log(`
-Next: add your LLM key to .env — the kit uses Venice AI (LLM_PROVIDER=venice + VENICE_API_KEY=..., free
-credits with code IMPERIAL50 at venice.ai/settings/api; OpenAI/Anthropic also work — see LLM.md),
-fund the BUYER wallet above, then run the demo:
+Next: optionally add an LLM key to .env (deterministic bidding works without one), fund the BUYER
+wallet above, then run the ProofSentry market:
 
-  npm run dev          # starts the proxy (live data + escrow) + the Oracle UI, opens the browser
+  docker compose up -d coral
+  npm run marketplace
 
-The board fills from live TxODDS data; selecting a fixture delivers the agent's read and the buyer
-escrow settles it to the distinct seller on devnet automatically.
+The buyer requests public API evidence; sellers compete; escrow settles the winning delivery.
 `)

@@ -99,6 +99,9 @@ describe('ProofSentry endpoint evidence', () => {
     'https://127.0.0.1/health',
     'https://169.254.169.254/latest/meta-data',
     'https://10.0.0.1/private',
+    'https://198.51.100.7/documentation',
+    'https://[::1]/health',
+    'https://[2001:db8::1]/documentation',
   ])('rejects unsafe target %s', async (target) => {
     const out = JSON.parse(await runProofSentry(target, {
       fetch: vi.fn() as unknown as typeof fetch,

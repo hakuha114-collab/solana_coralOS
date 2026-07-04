@@ -57,6 +57,8 @@ function isUnsafeIp(address: string): boolean {
       (a === 192 && b === 0) ||
       (a === 192 && b === 168) ||
       (a === 198 && (b === 18 || b === 19)) ||
+      (a === 198 && b === 51) ||
+      (a === 203 && b === 0) ||
       a >= 224
     )
   }
@@ -68,7 +70,11 @@ function isUnsafeIp(address: string): boolean {
       normalized === '::1' ||
       normalized.startsWith('fc') ||
       normalized.startsWith('fd') ||
-      /^fe[89ab]/.test(normalized)
+      /^fe[89ab]/.test(normalized) ||
+      normalized.startsWith('ff') ||
+      normalized.startsWith('2001:db8:') ||
+      normalized.startsWith('2002:') ||
+      normalized.startsWith('::ffff:')
     ) return true
     const mapped = normalized.match(/^::ffff:(\d+\.\d+\.\d+\.\d+)$/)?.[1]
     return mapped ? isUnsafeIp(mapped) : false
