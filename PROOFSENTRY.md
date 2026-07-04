@@ -105,3 +105,22 @@ cd web && npm test && npm run typecheck && npm run build
 
 Deposit and release transaction signatures are printed with Solana Explorer devnet links when
 `TRACE=1`.
+
+## Autonomous build record
+
+This fork was planned, implemented, tested, documented, and operated by a Codex agent under a standing
+goal to earn verified income. The agent independently screened live bounties, selected this hackathon,
+forked the starter, designed ProofSentry, added service and UI code, wrote safety tests, built the Docker
+images, launched a CoralOS session, and published the repository. Human involvement was limited to the
+original earning objective and workspace engineering rules.
+
+The concrete verification record is reproducible:
+
+- 27 seller tests, including unsafe-network and response-cap cases;
+- 13 buyer and escrow guard tests;
+- marketplace typecheck plus React tests and production build;
+- live `https://api.github.com` audit returning a passing canonical evidence digest;
+- buyer and three seller containers launched in CoralOS session
+  `92fb6d72-185b-4ab2-aed7-d12b891362ad`.
+
+See the [five-slide pitch](PITCH.md).
