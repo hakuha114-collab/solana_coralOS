@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Feed } from './types'
+import { createProofSentryDemoFeed, PROOFSENTRY_DEMO_SESSION } from './demoFeed'
 
 const FEED_URL = import.meta.env.VITE_FEED_URL ?? 'http://localhost:4000'
+export const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === 'true'
 
 /** Ask the feed server to launch a market session; returns its id. (Fund wallets first.) */
 export async function startMarket(): Promise<string> {
+  if (DEMO_MODE) return PROOFSENTRY_DEMO_SESSION
   const r = await fetch(`${FEED_URL}/api/start`, { method: 'POST' })
   const body = (await r.json()) as { session?: string; error?: string }
   if (!r.ok || !body.session) throw new Error(body.error ?? `start failed (${r.status})`)
@@ -31,6 +34,20 @@ export function useFeed(session: string, intervalMs = 1000): FeedState {
       setState({ rounds: [], connected: false, error: 'no session' })
       return
     }
+    if (DEMO_MODE && session === PROOFSENTRY_DEMO_SESSION) {
+      const startedAt = Date.now()
+      const tick = () => {
+        if (stop.current) return
+        const feed = createProofSentryDemoFeed(Date.now() - startedAt)
+        setState({ rounds: feed.rounds, connected: true })
+      }
+      tick()
+      const id = setInterval(tick, intervalMs)
+      return () => {
+        stop.current = true
+        clearInterval(id)
+      }
+    }
     const tick = async () => {
       try {
         const r = await fetch(`${FEED_URL}/api/feed?session=${encodeURIComponent(session)}`)
@@ -38,12 +55,17 @@ export function useFeed(session: string, intervalMs = 1000): FeedState {
         const feed = (await r.json()) as Feed
         if (!stop.current) setState({ rounds: feed.rounds ?? [], connected: true })
       } catch (e) {
-        if (!stop.current) setState((s) => ({ ...s, connected: false, error: (e as Error).message }))
+        if (!stop.current) {
+          setState((s) => ({ ...s, connected: false, error: (e as Error).message }))
+        }
       }
     }
     void tick()
     const id = setInterval(tick, intervalMs)
-    return () => { stop.current = true; clearInterval(id) }
+    return () => {
+      stop.current = true
+      clearInterval(id)
+    }
   }, [session, intervalMs])
 
   return state

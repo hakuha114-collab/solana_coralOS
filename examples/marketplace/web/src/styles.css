@@ -24,6 +24,10 @@ body { margin: 0; background: var(--bg); color: var(--txt); }
 }
 .session-bar button:disabled { opacity: 0.5; cursor: default; }
 .start-err { color: var(--refund); font-size: 13px; margin: 0 0 12px; }
+.demo-notice {
+  margin: 16px 0 0; padding: 10px 14px; border: 1px solid var(--premium);
+  border-radius: 8px; background: var(--panel); color: var(--premium); font-size: 12px;
+}
 
 .empty { color: var(--dim); padding: 32px 0; text-align: center; }
 .market { display: flex; flex-direction: column; gap: 12px; }
